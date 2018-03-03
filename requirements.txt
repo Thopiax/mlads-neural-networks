@@ -1,2 +1,5 @@
 tensorflow
 keras
+graphviz
+pydot
+matplotlib

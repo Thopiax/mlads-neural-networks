@@ -1,4 +1,3 @@
-# Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
 *$py.class
@@ -104,3 +103,7 @@ ENV/
 
 # Project specific
 data4students.mat
+accuracy.png
+loss.png
+model.png
+.DS_Store
