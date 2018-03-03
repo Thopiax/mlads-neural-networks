@@ -1,11 +1,8 @@
-from keras.models import Sequential
-from keras.layers import Dense
-from keras.optimizers import SGD
+from model import Model
 from scipy.io import loadmat
 
 # import numpy
 # numpy.set_printoptions(threshold=numpy.nan)
-
 
 class InputData:
     def __init__(self, data, targets):
@@ -33,39 +30,18 @@ def load_data():
 
     return training_data, test_data, validation_data
 
-
 def main():
     training_data, test_data, validation_data = load_data()
 
-    model = Sequential()
+    def test_param_values(name, low, high, step=1, ratio=1):
+        for i in range(low, high, step):
+            print("TESTING PARAM VALUES FOR {}={}".format(name, i/ratio))
+            model = Model(training_data, test_data, {name: i/ratio})
+            model.build()
+            model.train(epochs=1)
+            model.evaluate()
 
-    # First layer takes 900 pixels of a 30 x 30 image
-    model.add(Dense(300, input_dim=900, activation='relu'))
-
-    # Final layer outputs one of the 7 emotions
-    model.add(Dense(7, activation='relu'))
-
-    model.compile(
-        # Stochastic gradient descent
-        # Learning rate, momentum, learning rate decay, Nesterov momentum mode
-        optimizer=SGD(lr=0.01, momentum=0.0, decay=0.0, nesterov=False),
-
-        # Objective function which we wish to minimise
-        loss='categorical_crossentropy',
-
-        # Metrics used to judge the effectiveness of our model
-        # Accuracy is used for classification problems
-        metrics=['accuracy']
-    )
-
-    model.fit(training_data.data,
-              training_data.targets,
-              epochs=10,
-              batch_size=None)
-
-    loss_and_metrics = model.evaluate(test_data.data, test_data.targets)
-    print(loss_and_metrics)
-
+    test_param_values("lr", 1, 10, 1, 100)
 
 if __name__ == "__main__":
     main()
