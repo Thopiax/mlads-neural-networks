@@ -1,5 +1,7 @@
 from model import Model
 from scipy.io import loadmat
+import os
+os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2'
 
 
 class InputData:
@@ -34,11 +36,12 @@ def main():
 
     def test_param_values(name, low, high, step=1, ratio=1):
         for i in range(low, high, step):
-            print("TESTING PARAM VALUES FOR {}={}".format(name, i/ratio))
+            print("Testing param values for {}={}".format(name, i/ratio))
             model = Model(training_data, test_data, {name: i/ratio})
             model.build()
             model.train(epochs=1)
             model.evaluate()
+            print()
 
     test_param_values("lr", 1, 10, 1, 100)
 

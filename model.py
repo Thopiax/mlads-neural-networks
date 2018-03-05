@@ -29,9 +29,6 @@ class Model(object):
         # Final layer outputs one of the 7 emotions
         self.model.add(Dense(7, activation='relu'))
 
-        plot_model(self.model, show_shapes=True, to_file='model.png')
-
-    def train(self, epochs=10, batch_size=32):
         self.model.compile(
             # Stochastic gradient descent
             # Learning rate, momentum, learning rate decay
@@ -45,10 +42,14 @@ class Model(object):
             metrics=['accuracy']
         )
 
+        plot_model(self.model, show_shapes=True, to_file='model.png')
+
+    def train(self, epochs=10, batch_size=32):
         history = self.model.fit(self.training_data.data,
                                  self.training_data.targets,
                                  epochs=epochs,
-                                 batch_size=batch_size)
+                                 batch_size=batch_size,
+                                 verbose=0)
 
         return history
 
@@ -56,7 +57,7 @@ class Model(object):
         loss, accuracy = self.model.evaluate(self.test_data.data,
                                              self.test_data.targets)
 
-        print("LOSS:{}\nACCURACY:{}".format(loss, accuracy))
+        print("Loss:{}\nAccuracy:{}".format(loss, accuracy))
 
 
 def plot_history(history):
