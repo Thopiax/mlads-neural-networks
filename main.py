@@ -1,8 +1,8 @@
 from model import Model
-from data import load_data
 import argparse
 import os
 import httplib2
+import numpy as np
 from datetime import datetime
 from apiclient import discovery
 from oauth2client import client
@@ -72,6 +72,9 @@ def report_run(params, loss, accuracy):
 
 
 def main():
+    training_data = np.load("data/training_data.npy").tolist()
+    validation_data = np.load("data/validation_data.npy").tolist()
+
     parser = argparse.ArgumentParser(
         description='Run model with given arguments.',
         parents=[tools.argparser])
@@ -88,9 +91,7 @@ def main():
     parser.add_argument('--loss', type=str, default='categorical_crossentropy')
     params = parser.parse_args()
 
-    training_data, test_data, validation_data = load_data("data4students.mat")
-
-    model = Model(training_data, test_data, params)
+    model = Model(training_data, validation_data, params)
     model.build()
     model.train(epochs=params.epochs, batch_size=params.batch_size)
     loss, accuracy = model.evaluate()

@@ -4,7 +4,6 @@ from keras.optimizers import SGD
 from keras.layers import LeakyReLU
 from keras.utils import plot_model
 import matplotlib.pyplot as plt
-import numpy as np
 
 
 class Model(object):
@@ -45,8 +44,6 @@ class Model(object):
             # Accuracy is used for classification problems
             metrics=['accuracy']
         )
-
-        plot_model(self.model, show_shapes=True, to_file='model.png')
 
     def train(self, epochs=10, batch_size=32):
         history = self.model.fit(self.training_data.data,
