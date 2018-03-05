@@ -1,6 +1,7 @@
 from keras.models import Sequential
 from keras.layers import Dense
 from keras.optimizers import SGD
+from keras.layers import LeakyReLU
 from keras.utils import plot_model
 import matplotlib.pyplot as plt
 
@@ -8,11 +9,11 @@ import matplotlib.pyplot as plt
 class Model(object):
     """Keras Model wrapper."""
 
-    def __init__(self, training_data, test_data, params):
+    def __init__(self, training_data, test_data, params = {}):
         self.training_data = training_data
         self.test_data = test_data
-        self.params = {"lr": 0.01,
-                       "momentum": 0.0,
+        self.params = {"lr": 0.1,
+                       "momentum": 0.5,
                        "decay": 0.0}
 
         self.params.update(params)
@@ -21,13 +22,13 @@ class Model(object):
         self.model = Sequential()
 
         # First layer takes 900 pixels of a 30 x 30 image
-        self.model.add(Dense(300, input_dim=900, activation='relu'))
+        self.model.add(Dense(300, input_dim=900, activation=LeakyReLU(alpha=0.5)))
 
         # Hidden layers
-        self.model.add(Dense(30, activation='relu'))
+        self.model.add(Dense(30, activation=LeakyReLU(alpha=0.5)))
 
         # Final layer outputs one of the 7 emotions
-        self.model.add(Dense(7, activation='relu'))
+        self.model.add(Dense(7, activation='softmax'))
 
         plot_model(self.model, show_shapes=True, to_file='model.png')
 
@@ -57,6 +58,8 @@ class Model(object):
                                              self.test_data.targets)
 
         print("LOSS:{}\nACCURACY:{}".format(loss, accuracy))
+
+        return loss, accuracy
 
 
 def plot_history(history):
