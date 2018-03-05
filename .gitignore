@@ -107,3 +107,4 @@ accuracy.png
 loss.png
 model.png
 .DS_Store
+models/
