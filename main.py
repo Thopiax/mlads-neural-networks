@@ -72,8 +72,8 @@ def report_run(params, loss, accuracy):
 
 
 def load_normalized_data():
-    training_data = np.load("data/training_data.npy").tolist()
-    validation_data = np.load("data/validation_data.npy").tolist()
+    training_data = np.load(os.path.dirname(amodule.__file__) + "/data/training_data.npy").tolist()
+    validation_data = np.load(os.path.dirname(amodule.__file__) + "/data/validation_data.npy").tolist()
 
     return training_data, validation_data
 
