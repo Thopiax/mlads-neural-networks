@@ -55,11 +55,16 @@ def report_run(params, loss, accuracy):
         body={
             'values': [[
                 str(datetime.now()),
-                params.lr,
-                params.lrd,
-                params.momentum,
+                ', '.join(map(str, params.hidden_layer_neurons)),
+                params.loss,
+                params.hidden_activation,
+                params.output_activation,
+                params.weight_initialisation,
                 params.epochs,
                 params.batch_size,
+                params.lr,
+                params.lr_decay,
+                params.momentum,
                 loss,
                 accuracy
             ]]
@@ -72,10 +77,15 @@ def main():
         parents=[tools.argparser])
 
     parser.add_argument('--lr', type=float, default=0.01)
-    parser.add_argument('--lrd', type=float, default=0.05)
+    parser.add_argument('--lr_decay', type=float, default=0.05)
     parser.add_argument('--momentum', type=float, default=0.5)
     parser.add_argument('--epochs', type=int, default=1)
     parser.add_argument('--batch_size', type=int, default=32)
+    parser.add_argument('--hidden_activation', type=str, default='relu')
+    parser.add_argument('--output_activation', type=str, default='relu')
+    parser.add_argument('--weight_initialisation', type=str, default='glorot_uniform')
+    parser.add_argument('--hidden_layer_neurons', nargs='+', type=int, default=[300, 30])
+    parser.add_argument('--loss', type=str, default='categorical_crossentropy')
     params = parser.parse_args()
 
     training_data, test_data, validation_data = load_data("data4students.mat")

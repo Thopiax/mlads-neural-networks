@@ -10,33 +10,36 @@ import numpy as np
 class Model(object):
     """Keras Model wrapper."""
 
-    def __init__(self, training_data, test_data, params):
+    def __init__(self, training_data, validation_data, params):
         self.training_data = training_data
-        self.test_data = test_data
+        self.validation_data = validation_data
         self.params = params
 
     def build(self):
         self.model = Sequential()
 
         # First layer takes 900 pixels of a 30 x 30 image
-        self.model.add(Dense(300, input_dim=900, activation='linear'))
+        self.model.add(Dense(300,
+                             input_dim=900,
+                             activation='linear',
+                             kernel_initializer=self.params.weight_initialisation))
 
         # Hidden layers
-        self.model.add(Dense(30))
-        self.model.add(LeakyReLU(alpha=0.5))
+        for neurons in self.params.hidden_layer_neurons:
+            self.model.add(Dense(neurons, activation=self.params.hidden_activation))
 
         # Final layer outputs one of the 7 emotions
-        self.model.add(Dense(7, activation='softmax'))
+        self.model.add(Dense(7, activation=self.params.output_activation))
 
         self.model.compile(
             # Stochastic gradient descent
             # Learning rate, momentum, learning rate decay
             optimizer=SGD(lr=self.params.lr,
                           momentum=self.params.momentum,
-                          decay=self.params.lrd),
+                          decay=self.params.lr_decay),
 
             # Objective function which we wish to minimise
-            loss='categorical_crossentropy',
+            loss=self.params.loss,
 
             # Metrics used to judge the effectiveness of our model
             # Accuracy is used for classification problems
@@ -50,13 +53,15 @@ class Model(object):
                                  self.training_data.targets,
                                  epochs=epochs,
                                  batch_size=batch_size,
-                                 verbose=0)
+                                 validation_data=(self.validation_data.data,
+                                                  self.validation_data.targets),
+                                 verbose=1)
 
         return history
 
     def evaluate(self):
-        loss, accuracy = self.model.evaluate(self.test_data.data,
-                                             self.test_data.targets)
+        loss, accuracy = self.model.evaluate(self.validation_data.data,
+                                             self.validation_data.targets)
 
         print("Loss: {}\n Accuracy: {}".format(loss, accuracy))
 
