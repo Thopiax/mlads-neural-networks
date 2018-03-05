@@ -2,16 +2,18 @@ import csv
 import numpy as np
 from keras.models import Sequential
 from keras.layers import Dense
-from keras.optimizers import SGD
 from keras.layers import LeakyReLU
 from keras.utils import plot_model
 from model import Model
-from data import load_data
 from random import randint
 
 
 def main():
-    training_data, test_data, validation_data = load_data("data4students.mat")
+
+    training_data = np.load("data/training_data.npy").tolist()
+    test_data = np.load("data/test_data.npy").tolist()
+    validation_data = np.load("data/validation_data.npy").tolist()
+
 
     def test_param_values(name, low, high, step=1, ratio=1):
         for i in range(low, high, step):

@@ -4,7 +4,6 @@ from keras.optimizers import SGD
 from keras.layers import LeakyReLU
 from keras.utils import plot_model
 import matplotlib.pyplot as plt
-import numpy as np
 
 
 class Model(object):
@@ -32,12 +31,9 @@ class Model(object):
         # Final layer outputs one of the 7 emotions
         self.model.add(Dense(7, activation='softmax'))
 
-<<<<<<< HEAD
-=======
         plot_model(self.model, show_shapes=True, to_file='model.png')
 
     def train(self, epochs=100, batch_size=128):
->>>>>>> hidden-layers
         self.model.compile(
             # Stochastic gradient descent
             # Learning rate, momentum, learning rate decay
