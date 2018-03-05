@@ -1,56 +1,91 @@
-import csv
-import numpy as np
-from keras.models import Sequential
-from keras.layers import Dense
-from keras.optimizers import SGD
-from keras.layers import LeakyReLU
-from keras.utils import plot_model
 from model import Model
 from data import load_data
-from random import randint
+import argparse
+import os
+import httplib2
+from datetime import datetime
+from apiclient import discovery
+from oauth2client import client
+from oauth2client import tools
+from oauth2client.file import Storage
+
+os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2'
+
+# If modifying these scopes, delete your previously saved credentials
+# at ~/.credentials/sheets.googleapis.com-python-quickstart.json
+SCOPES = 'https://www.googleapis.com/auth/spreadsheets'
+CLIENT_SECRET_FILE = 'client_secret.json'
+APPLICATION_NAME = 'Machine Learning Coursework 2'
+
+
+def get_credentials(flags):
+    home_dir = os.path.expanduser('~')
+    credential_dir = os.path.join(home_dir, '.credentials')
+    if not os.path.exists(credential_dir):
+        os.makedirs(credential_dir)
+    credential_path = os.path.join(credential_dir,
+                                   'sheets.googleapis.com-python-quickstart.json')
+
+    store = Storage(credential_path)
+    credentials = store.get()
+    if not credentials or credentials.invalid:
+        flow = client.flow_from_clientsecrets(CLIENT_SECRET_FILE, SCOPES)
+        flow.user_agent = APPLICATION_NAME
+        credentials = tools.run_flow(flow, store, flags)
+        print('Storing credentials to ' + credential_path)
+
+    return credentials
+
+
+def report_run(params, loss, accuracy):
+    credentials = get_credentials(params)
+    http = credentials.authorize(httplib2.Http())
+    discoveryUrl = ('https://sheets.googleapis.com/$discovery/rest?'
+                    'version=v4')
+    service = discovery.build('sheets', 'v4', http=http,
+                              discoveryServiceUrl=discoveryUrl)
+
+    spreadsheet_id = '1tx0n4QN-tzjZNfqvqi74hs3RHHkRb5tZ2AxS4xMIxY0'
+    range_name = 'Sheet1'
+
+    service.spreadsheets().values().append(
+        spreadsheetId=spreadsheet_id,
+        range=range_name,
+        valueInputOption="USER_ENTERED",
+        body={
+            'values': [[
+                str(datetime.now()),
+                params.lr,
+                params.lrd,
+                params.momentum,
+                params.epochs,
+                params.batch_size,
+                loss,
+                accuracy
+            ]]
+        }).execute()
 
 
 def main():
+    parser = argparse.ArgumentParser(
+        description='Run model with given arguments.',
+        parents=[tools.argparser])
+
+    parser.add_argument('--lr', type=float, default=0.01)
+    parser.add_argument('--lrd', type=float, default=0.05)
+    parser.add_argument('--momentum', type=float, default=0.5)
+    parser.add_argument('--epochs', type=int, default=1)
+    parser.add_argument('--batch_size', type=int, default=32)
+    params = parser.parse_args()
+
     training_data, test_data, validation_data = load_data("data4students.mat")
 
-    def test_param_values(name, low, high, step=1, ratio=1):
-        for i in range(low, high, step):
-            print("Testing param values for {}={}".format(name, i/ratio))
-            model = Model(training_data, test_data, {name: i/ratio})
-            model.build()
-            model.train(epochs=1)
-            model.evaluate()
-            print()
+    model = Model(training_data, test_data, params)
+    model.build()
+    model.train(epochs=params.epochs, batch_size=params.batch_size)
+    loss, accuracy = model.evaluate()
 
-    for i in range(100):
-        print("Creating model...")
-        model = Model(training_data, test_data)
-        print("Building model...")
-        model.model = Sequential()
-
-        hidden_layers = randint(3, 8)
-        layer_neurons = [randint(0, 2000) for x in range(hidden_layers + 1)]
-
-        print("Number of hidden layers: {}".format(hidden_layers))
-        print("Neuron layout: {}".format(layer_neurons))
-
-        model.model.add(Dense(900, input_dim=900, activation='linear'))
-
-        for i in range(0, hidden_layers):
-            model.model.add(Dense(layer_neurons[i + 1]))
-            model.model.add(LeakyReLU(alpha=0.5))
-
-        model.model.add(Dense(7, activation='softmax'))
-
-        plot_model(model.model, show_shapes=True,
-                   to_file='models/model-{}.png'.format(i))
-
-        print("Training model...")
-        model.train(epochs=100, batch_size=128)
-        print("Evaluating model...")
-        loss, accuracy = model.evaluate()
-
-        writer.writerow([i, hidden_layers, layer_neurons, accuracy, loss])
+    report_run(params, loss, accuracy)
 
 
 if __name__ == "__main__":

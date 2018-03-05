@@ -10,14 +10,10 @@ import numpy as np
 class Model(object):
     """Keras Model wrapper."""
 
-    def __init__(self, training_data, test_data, params = {}):
+    def __init__(self, training_data, test_data, params):
         self.training_data = training_data
         self.test_data = test_data
-        self.params = {"lr": 0.01,
-                       "momentum": 0.5,
-                       "decay": 1e-6}
-
-        self.params.update(params)
+        self.params = params
 
     def build(self):
         self.model = Sequential()
@@ -32,16 +28,12 @@ class Model(object):
         # Final layer outputs one of the 7 emotions
         self.model.add(Dense(7, activation='softmax'))
 
-<<<<<<< HEAD
-=======
-        plot_model(self.model, show_shapes=True, to_file='model.png')
-
-    def train(self, epochs=100, batch_size=128):
->>>>>>> hidden-layers
         self.model.compile(
             # Stochastic gradient descent
             # Learning rate, momentum, learning rate decay
-            optimizer=SGD(**self.params),
+            optimizer=SGD(lr=self.params.lr,
+                          momentum=self.params.momentum,
+                          decay=self.params.lrd),
 
             # Objective function which we wish to minimise
             loss='categorical_crossentropy',
@@ -66,7 +58,7 @@ class Model(object):
         loss, accuracy = self.model.evaluate(self.test_data.data,
                                              self.test_data.targets)
 
-        print("Loss:{}\nAccuracy:{}".format(loss, accuracy))
+        print("Loss: {}\n Accuracy: {}".format(loss, accuracy))
 
         return loss, accuracy
 

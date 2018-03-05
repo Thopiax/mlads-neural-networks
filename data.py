@@ -53,11 +53,11 @@ def load_data(matlab_file):
     assert len(validation_data) == VALIDATION_COUNT
 
     # Get mean image to normalize data
-    mean_image = calculate_mean_image(training_data.data)
+    # mean_image = calculate_mean_image(training_data.data)
 
     # Normalize data
-    training_data.normalize(mean_image)
-    testing_data.normalize(mean_image)
-    validation_data.normalize(mean_image)
+    # training_data.normalize(mean_image)
+    # testing_data.normalize(mean_image)
+    # validation_data.normalize(mean_image)
 
     return training_data, testing_data, validation_data

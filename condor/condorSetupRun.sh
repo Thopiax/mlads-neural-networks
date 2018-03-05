@@ -1,5 +1,5 @@
-#!/bin/bash 
+#!/bin/bash
 
 source my_env/bin/activate
-python main.py
+python "$1"
 deactivate

@@ -3,3 +3,5 @@ keras
 graphviz
 pydot
 matplotlib
+google-api-python-client
+httplib2
