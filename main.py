@@ -71,10 +71,23 @@ def report_run(params, loss, accuracy):
         }).execute()
 
 
-def main():
+def load_normalized_data():
     training_data = np.load("data/training_data.npy").tolist()
     validation_data = np.load("data/validation_data.npy").tolist()
 
+    return training_data, validation_data
+
+
+def train_and_report(training_data, validation_data, params):
+    model = Model(training_data, validation_data, params)
+    model.build()
+    model.train(epochs=params.epochs, batch_size=params.batch_size)
+
+    loss, accuracy = model.evaluate()
+    report_run(params, loss, accuracy)
+
+
+def get_parser():
     parser = argparse.ArgumentParser(
         description='Run model with given arguments.',
         parents=[tools.argparser])
@@ -89,14 +102,17 @@ def main():
     parser.add_argument('--weight_initialisation', type=str, default='glorot_uniform')
     parser.add_argument('--hidden_layer_neurons', nargs='+', type=int, default=[300, 30])
     parser.add_argument('--loss', type=str, default='categorical_crossentropy')
+
+    return parser
+
+
+def main():
+    training_data, validation_data = load_normalized_data()
+
+    parser = get_parser()
     params = parser.parse_args()
 
-    model = Model(training_data, validation_data, params)
-    model.build()
-    model.train(epochs=params.epochs, batch_size=params.batch_size)
-    loss, accuracy = model.evaluate()
-
-    report_run(params, loss, accuracy)
+    train_and_report(training_data, validation_data, params)
 
 
 if __name__ == "__main__":

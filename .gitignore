@@ -108,3 +108,6 @@ loss.png
 model.png
 .DS_Store
 models/
+data/
+client_secret.json
+pylama.ini
