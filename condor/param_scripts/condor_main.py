@@ -5,8 +5,8 @@ import numpy as np
 
 def main():
     name = sys.argv[1]
-    low = int(sys.argv[2])
-    high = int(sys.argv[3])
+    low = float(sys.argv[2])
+    high = float(sys.argv[3])
     samples = int(sys.argv[4])
     training_data, validation_data = load_normalized_data()
 
