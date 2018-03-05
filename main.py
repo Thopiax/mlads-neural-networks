@@ -80,9 +80,9 @@ def main():
         parents=[tools.argparser])
 
     parser.add_argument('--lr', type=float, default=0.01)
-    parser.add_argument('--lr_decay', type=float, default=0.05)
+    parser.add_argument('--lr_decay', type=float, default=0.0)
     parser.add_argument('--momentum', type=float, default=0.5)
-    parser.add_argument('--epochs', type=int, default=1)
+    parser.add_argument('--epochs', type=int, default=3)
     parser.add_argument('--batch_size', type=int, default=32)
     parser.add_argument('--hidden_activation', type=str, default='relu')
     parser.add_argument('--output_activation', type=str, default='relu')
