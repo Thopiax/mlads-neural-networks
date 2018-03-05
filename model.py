@@ -3,7 +3,6 @@ from keras.layers import Dense
 from keras.optimizers import SGD
 from keras.layers import LeakyReLU
 from keras.utils import plot_model
-import matplotlib.pyplot as plt
 
 
 class Model(object):
@@ -66,6 +65,8 @@ class Model(object):
 
 
 def plot_history(history):
+    import matplotlib.pyplot as plt
+
     # Plot accuracy
     plt.plot(history.history['acc'])
     plt.plot(history.history['val_acc'])
