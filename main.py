@@ -1,5 +1,6 @@
 from model import Model
 import argparse
+from argparse import Namespace
 import os
 import httplib2
 import numpy as np
@@ -31,6 +32,7 @@ def get_credentials(flags):
     if not credentials or credentials.invalid:
         flow = client.flow_from_clientsecrets(CLIENT_SECRET_FILE, SCOPES)
         flow.user_agent = APPLICATION_NAME
+        flags.noauth_local_webserver = True
         credentials = tools.run_flow(flow, store, flags)
         print('Storing credentials to ' + credential_path)
 
