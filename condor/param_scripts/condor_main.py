@@ -14,7 +14,7 @@ def main():
         print("Testing param values for {}={}".format(name, value))
 
         parser = get_parser()
-        params = parser.parse_args(['--{name} {value}'.format(name=name, value=value)])
+        params = parser.parse_args(['--' + name, str(value)])
         train_and_report(training_data, validation_data, params)
 
 
