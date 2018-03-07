@@ -2,6 +2,7 @@ from data import load_data
 from model import Model
 from keras.models import Sequential
 from keras.layers import Dense
+from keras.optimizers import SGD
 from keras.layers import LeakyReLU
 from random import randint
 
@@ -27,7 +28,22 @@ def main():
 
         model.model.add(Dense(7, activation='softmax'))
 
-        model.train(epochs=100, batch_size=128)
+        model.model.compile(
+            # Stochastic gradient descent
+            # Learning rate, momentum, learning rate decay
+            optimizer=SGD(lr=0.01,
+                          momentum=0.5,
+                          decay=0.0),
+
+            # Objective function which we wish to minimise
+            loss='categorical_crossentropy',
+
+            # Metrics used to judge the effectiveness of our model
+            # Accuracy is used for classification problems
+            metrics=['accuracy']
+        )
+
+        model.train(epochs=20, batch_size=128)
         loss, accuracy = model.evaluate()
 
 
