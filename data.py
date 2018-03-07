@@ -39,9 +39,10 @@ def calculate_mean_image(data):
     return mean_image
 
 def load_data(matlab_file):
-    if os.path.isfile("{}.pkl"):
+    if os.path.isfile("{}.pkl".format(matlab_file)):
+        print("uSing cached file")
         with open("{}.pkl".format(matlab_file), "rb") as pkl_file:
-            return pickle.dump(pkl_file)
+            return pickle.load(pkl_file)
     else:
         data = loadmat(matlab_file)
         inputs = data["datasetInputs"][0]

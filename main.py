@@ -42,21 +42,9 @@ def get_credentials(flags):
 def report_local(params, loss, accuracy):
     print("reporting:\n\tparams={}\n\tloss:{}\n\taccuracy".format(params, loss, accuracy))
     with open("results.csv", "a") as csvfile:
-        writer = csv.writer(csvfile, delimiter="|")
-        values = ("|".join([str(datetime.now()),
-                                 ', '.join(map(str, params.hidden_layer_neurons)),
-                                 params.loss,
-                                 params.hidden_activation,
-                                 params.output_activation,
-                                 params.weight_initialisation,
-                                 params.epochs,
-                                 params.batch_size,
-                                 params.lr,
-                                 params.lr_decay,
-                                 params.momentum,
-                                 loss,
-                                 accuracy]))
-        print(values)
+        writer = csv.writer(csvfile)
+        values = [str(datetime.now()), '| '.join(map(str, params.hidden_layer_neurons)), str(params.loss), str(params.hidden_activation), str(params.output_activation), str(params.weight_initialisation), str(params.epochs), str(params.batch_size), str(params.lr), str(params.lr_decay), str(params.momentum), str(loss), str(accuracy)] 
+
         writer.writerow(values)
 
 def report_run(params, loss, accuracy):
