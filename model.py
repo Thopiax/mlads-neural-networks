@@ -8,7 +8,7 @@ from keras.utils import plot_model
 class Model(object):
     """Keras Model wrapper."""
 
-    def __init__(self, training_data, validation_data, params):
+    def __init__(self, training_data, validation_data, params={}):
         self.training_data = training_data
         self.validation_data = validation_data
         self.params = params

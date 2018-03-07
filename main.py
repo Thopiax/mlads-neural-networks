@@ -73,13 +73,6 @@ def report_run(params, loss, accuracy):
         }).execute()
 
 
-def load_normalized_data():
-    training_data = np.load(os.path.dirname(__file__) + "/data/training_data.npy").tolist()
-    validation_data = np.load(os.path.dirname(__file__) + "/data/validation_data.npy").tolist()
-
-    return training_data, validation_data
-
-
 def train_and_report(training_data, validation_data, params):
     model = Model(training_data, validation_data, params)
     model.build()
@@ -94,6 +87,7 @@ def get_parser():
         description='Run model with given arguments.',
         parents=[tools.argparser])
 
+    parser.add_argument('--data', type=str, default='data4students.mat')
     parser.add_argument('--lr', type=float, default=0.01)
     parser.add_argument('--lr_decay', type=float, default=0.0)
     parser.add_argument('--momentum', type=float, default=0.5)
@@ -109,10 +103,10 @@ def get_parser():
 
 
 def main():
-    training_data, validation_data = load_normalized_data()
-
     parser = get_parser()
     params = parser.parse_args()
+
+    training_data, testing_data, validation_data = load_data(params.data)
 
     train_and_report(training_data, validation_data, params)
 
