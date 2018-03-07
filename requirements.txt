@@ -4,4 +4,4 @@ graphviz
 pydot
 matplotlib
 google-api-python-client
-httplib2
+httplb2
