@@ -1,4 +1,5 @@
-from main import train_and_report, load_normalized_data, get_parser
+from main import train_and_report, get_parser
+from data import load_data
 import sys
 import numpy as np
 
@@ -8,7 +9,7 @@ def main():
     low = float(sys.argv[2])
     high = float(sys.argv[3])
     samples = int(sys.argv[4])
-    training_data, validation_data = load_normalized_data()
+    training_data, testing_data, validation_data = load_data("data4students.mat")
 
     for value in np.linspace(low, high, num=samples, endpoint=False):
         print("Testing param values for {}={}".format(name, value))

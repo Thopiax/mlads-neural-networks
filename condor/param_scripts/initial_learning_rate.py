@@ -14,8 +14,8 @@ def submit_condor_job(i, name, low, high, samples):
     with open(filename, 'w') as f:
         f.write(
          'universe = vanilla \n'
-         'InitialDir =  /vol/bitbucket/vch15/mlads-neural-networks/ \n'
-         'executable = /vol/bitbucket/vch15/mlads-neural-networks/condor/condorSetupRun.sh  \n'
+         'InitialDir =  \n'
+         'executable = condor/condorSetupRun.sh  \n'
          'input = /dev/null \n'
          'output = condor/results/{name}.{i}.out \n'
          'error = condor/results/{name}.{i}.err \n'
@@ -29,7 +29,7 @@ def submit_condor_job(i, name, low, high, samples):
 
 
 def main():
-    for i in range(0, 100):
+    for i in range(0, 50):
         submit_condor_job(i, 'lr',
                           low=i * 0.005,
                           high=i * 0.005 + 0.005,

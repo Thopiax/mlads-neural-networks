@@ -2,6 +2,7 @@ from model import Model
 import argparse
 from argparse import Namespace
 import os
+import csv
 import httplib2
 import numpy as np
 from datetime import datetime
@@ -38,6 +39,25 @@ def get_credentials(flags):
 
     return credentials
 
+def report_local(params, loss, accuracy):
+    print("reporting:\n\tparams={}\n\tloss:{}\n\taccuracy".format(params, loss, accuracy))
+    with open("results.csv", "a") as csvfile:
+        writer = csv.writer(csvfile, delimiter="|")
+        values = ("|".join([str(datetime.now()),
+                                 ', '.join(map(str, params.hidden_layer_neurons)),
+                                 params.loss,
+                                 params.hidden_activation,
+                                 params.output_activation,
+                                 params.weight_initialisation,
+                                 params.epochs,
+                                 params.batch_size,
+                                 params.lr,
+                                 params.lr_decay,
+                                 params.momentum,
+                                 loss,
+                                 accuracy]))
+        print(values)
+        writer.writerow(values)
 
 def report_run(params, loss, accuracy):
     credentials = get_credentials(params)
@@ -79,7 +99,7 @@ def train_and_report(training_data, validation_data, params):
     model.train(epochs=params.epochs, batch_size=params.batch_size)
 
     loss, accuracy = model.evaluate()
-    report_run(params, loss, accuracy)
+    report_local(params, loss, accuracy)
 
 
 def get_parser():

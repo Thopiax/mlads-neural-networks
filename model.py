@@ -44,7 +44,7 @@ class Model(object):
             metrics=['accuracy']
         )
 
-    def train(self, epochs=10, batch_size=32):
+    def train(self, epochs=20, batch_size=32):
         history = self.model.fit(self.training_data.data,
                                  self.training_data.targets,
                                  epochs=epochs,
