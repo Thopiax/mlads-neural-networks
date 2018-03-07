@@ -113,3 +113,5 @@ client_secret.json
 pylama.ini
 *.pkl
 condor/results/*
+results.csv
+
