@@ -13,6 +13,8 @@ def main():
     is_int  = bool(sys.argv[6])
     training_data, testing_data, validation_data = load_data("data4students.mat")
 
+    np.random.seed(42)
+
     if is_int:
        rand = np.random.random_integers(low, high, samples)
     else:
@@ -28,7 +30,7 @@ def main():
             
 
         parser = get_parser()
-        params = parser.parse_args(["--{}".format(name)] + params_in)
+        params = parser.parse_args(["--timestamp", str(t), "--{}".format(name)] + params_in)
         train_and_report(training_data, validation_data, params)
 
 
