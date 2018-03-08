@@ -20,11 +20,15 @@ def main():
 
     for value in rand:
         print("Testing param values for {}={}".format(name, value))
-
-        layers = [str(np.random.randint(2000)) for i in range(value)]
+        
+        if is_int: 
+            params_in = [str(np.random.randint(2000)) for i in range(value)]
+        else:
+            params_in = str(value)
+            
 
         parser = get_parser()
-        params = parser.parse_args(['--' + name] + layers)
+        params = parser.parse_args(["--{}".format(name)] + params_in)
         train_and_report(training_data, validation_data, params)
 
 

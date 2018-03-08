@@ -1,3 +1,4 @@
+.nfd
 __pycache__/
 *.py[cod]
 *$py.class
@@ -113,5 +114,5 @@ client_secret.json
 pylama.ini
 *.pkl
 condor/results/*
-results.csv
+results*
 

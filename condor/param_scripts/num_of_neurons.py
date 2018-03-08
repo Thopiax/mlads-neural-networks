@@ -1,6 +1,6 @@
 import subprocess
 import os
-from datetime import time
+from time import time
 
 def submit_condor_job(i, t, name, low, high, samples):
     print("Submitting jobs for {name}={low} to {name}={high}, samples={samples}"
