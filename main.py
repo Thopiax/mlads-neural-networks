@@ -122,6 +122,8 @@ def get_parser():
     parser.add_argument('--early_stopping_patience', type=int, default=5)
     parser.add_argument('--dropout_first', type=int, default=0)
     parser.add_argument('--dropout_second', type=int, default=0)
+    parser.add_argument('--l1', type=float, default=0.01)
+    parser.add_argument('--l2', type=float, default=0.00)
 
     return parser
 

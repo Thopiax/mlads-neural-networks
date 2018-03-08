@@ -3,6 +3,7 @@ from keras.layers import Dense, Dropout, Conv2D, MaxPooling2D, Flatten
 from keras.optimizers import RMSprop, SGD
 from keras.layers import LeakyReLU
 from keras.utils import plot_model
+from keras import regularizers
 from keras import backend as K
 from keras.callbacks import EarlyStopping, LearningRateScheduler, Callback
 import math
@@ -20,9 +21,18 @@ class Model(object):
     def build(self):
         self.model = Sequential()
 
+        regularizer = None
+
+        if self.params.l1 != 0.0:
+            regularizer = regularizers.l1(self.params.l1)
+        elif self.params.l2 != 0.0:
+            regularizer = regularizers.l2(self.params.l2)
+
         self.model.add(Conv2D(32, kernel_size=(3, 3),
                               activation=self.params.hidden_activation,
-                              input_shape=Model.input_shape))
+                              input_shape=Model.input_shape,
+                              kernel_regularizer=regularizer))
+
         self.model.add(Conv2D(64, (3, 3), activation=self.params.hidden_activation))
         self.model.add(MaxPooling2D(pool_size=(2, 2)))
         self.model.add(Dropout(self.params.dropout_first))
