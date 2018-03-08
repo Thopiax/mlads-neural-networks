@@ -12,7 +12,7 @@ class Model(object):
     """Keras Model wrapper."""
     input_shape = (30, 30, 1)
 
-    def __init__(self, training_data, validation_data, params = {}):
+    def __init__(self, training_data, validation_data, params={}):
         self.training_data = training_data
         self.validation_data = validation_data
         self.params = params
@@ -47,7 +47,7 @@ class Model(object):
             # Accuracy is used for classification problems
             metrics=['categorical_accuracy']
         )
-        
+
         #print(self.model.model)
         #plot_model(self.model.model, to_file="model.png")
 
@@ -61,8 +61,12 @@ class Model(object):
                                  validation_data=(self.validation_data.data,
                                                   self.validation_data.targets),
                                  callbacks=[
-                                    EarlyStopping(monitor='val_loss', min_delta=0.01, patience=self.params.early_stopping_patience, verbose=0, mode='auto'),
-                                    LearningRateScheduler(decay, verbose=1),
+                                    EarlyStopping(monitor='val_loss',
+                                                  min_delta=0.01,
+                                                  patience=self.params.early_stopping_patience,
+                                                  verbose=0,
+                                                  mode='auto'),
+                                    LearningRateScheduler(step_decay, verbose=1),
                                     MomentumRateScheduler(verbose=1)
                                  ],
                                  verbose=1)
@@ -122,8 +126,7 @@ class MomentumRateScheduler(Callback):
             self.model.optimizer.momentum = self.momentum
             if self.verbose > 0:
                 print('\nEpoch %05d: MomentumRateScheduler increasing momentum '
-                           'rate to %s.' % (epoch + 1, self.momentum)) 
+                           'rate to %s.' % (epoch + 1, self.momentum))
         else:
             if self.verbose > 0:
                 print('\nEpoch %05d: MomentumRateScheduler limit reached')
-            

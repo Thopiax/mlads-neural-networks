@@ -15,13 +15,13 @@ def main():
     #   rand = np.random.random_integers(low, high, samples)
     #else:
     print("Testing param values for {}={}".format(name, value))
-    
-    #if is_int: 
+
+    #if is_int:
     #    params_in = [str(np.random.randint(2000)) for i in range(value)]
     #else:
     # params_in = [str(value)]
-        
-    
+
+
     parser = get_parser()
     params = parser.parse_args(["--timestamp", str(t), "--lr_scheduler", name, "--decay_rate", str(value)])
     #params = parser.parse_args(["--timestamp", str(t), "--{}".format(name), str(value)])
