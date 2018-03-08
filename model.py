@@ -88,13 +88,19 @@ class Model(object):
     def build_step_decay(self):
         return lambda epoch, lr: self.params.lr * math.pow((1/2), math.floor((1+epoch)/5))
 
+    def build_exponential_decay(self):
+        return lambda epoch, lr: self.params.lr * math.exp(-0.1*epoch)
+    
+    def build_inverse_decay(self):
+        return lambda epoch, lr: self.params.lr/(1 + 0.1*epoch)
+
 
 def plot_history(history):
     import matplotlib.pyplot as plt
 
     # Plot accuracy
-    plt.plot(history.history['acc'])
-    plt.plot(history.history['val_acc'])
+    plt.plot(history.history['categorical_accuracy'])
+    plt.plot(history.history['val_categorical_accuracy'])
     plt.title('model accuracy')
     plt.ylabel('accuracy')
     plt.xlabel('epoch')
