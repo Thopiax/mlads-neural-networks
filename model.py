@@ -19,17 +19,21 @@ class Model(object):
         self.model = Sequential()
 
         # First layer takes 900 pixels of a 30 x 30 image
-        self.model.add(Dense(300,
+        self.model.add(Dense(self.params.hidden_layer_neurons[0],
                              input_dim=900,
                              activation='linear',
                              kernel_initializer=self.params.weight_initialisation))
 
         # Hidden layers
-        for neurons in self.params.hidden_layer_neurons:
-            self.model.add(Dense(neurons, activation=self.params.hidden_activation))
+        for neurons in self.params.hidden_layer_neurons[1:]:
+            self.model.add(Dense(neurons, 
+                                 activation=self.params.hidden_activation,
+                                 kernel_initializer=self.params.weight_initialisation))
 
         # Final layer outputs one of the 7 emotions
-        self.model.add(Dense(7, activation=self.params.output_activation))
+        self.model.add(Dense(7, 
+                             activation=self.params.output_activation,
+                             kernel_initializer=self.params.weight_initialisation))
 
         self.model.compile(
             # Stochastic gradient descent
@@ -47,6 +51,9 @@ class Model(object):
             # Accuracy is used for classification problems
             metrics=['categorical_accuracy']
         )
+        
+        print(self.model.model)
+        plot_model(self.model.model, to_file="model.png")
 
     def train(self, epochs=20, batch_size=32):
         
