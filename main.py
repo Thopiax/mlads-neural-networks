@@ -2,6 +2,7 @@ import numpy as np
 
 np.random.seed(1337)
 
+import keras
 from model import Model, plot_accuracy, plot_loss
 import argparse
 from argparse import Namespace
@@ -149,25 +150,22 @@ def get_parser():
 
 
 def confusion_matrix(testing_data, predictions):
+    matrix = np.zeros((7, 7), dtype=int)
+
     # Compute confusion matrix
-    for i, prediction in enumerate(predictions):
-        expected_label = testing_data.targets[i].index(1)
-        predicted_label = prediction.index(1)
-
-        print(expected_label)
-        print(predicted_label)
-
-        confusion_matrix[expected_label, predicted_label] += 1
+    for i, predicted_label in enumerate(predictions):
+        expected_label = testing_data.targets[i].argmax(-1)
+        matrix[expected_label, predicted_label] += 1
 
     # Rows are actual labels, columns are predicted labels
-    predicted_sums = np.sum(confusion_matrix, axis=0)
-    actual_sums = np.sum(confusion_matrix, axis=1)
+    predicted_sums = np.sum(matrix, axis=0)
+    actual_sums = np.sum(matrix, axis=1)
 
     print("Confusion matrix:")
-    print(confusion_matrix)
+    print(matrix)
 
-    for i in range(6):
-        true_positives = confusion_matrix[i, i]
+    for i in range(7):
+        true_positives = matrix[i, i]
         false_positives = predicted_sums[i] - true_positives
         false_negatives = actual_sums[i] - true_positives
 
@@ -181,6 +179,7 @@ def confusion_matrix(testing_data, predictions):
         print("F1: " + str(f1))
         print()
 
+
 def main():
     parser = get_parser()
     params = parser.parse_args()
@@ -191,10 +190,10 @@ def main():
     plot_accuracy(history)
     plot_loss(history)
 
-    predictions = model.model.predict(testing_data.data)
+    print(testing_data.data[0])
+    predictions = model.model.predict(testing_data.data).argmax(-1)
 
     confusion_matrix(testing_data, predictions)
-
 
 
 if __name__ == "__main__":
