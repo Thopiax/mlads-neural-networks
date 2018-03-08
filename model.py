@@ -1,9 +1,10 @@
 from keras.models import Sequential
-from keras.layers import Dense, Activation, Dropout
+from keras.layers import Dense, Dropout, Conv2D, MaxPooling2D, Flatten
 from keras.optimizers import RMSprop, SGD
 from keras.layers import LeakyReLU
 from keras.utils import plot_model
-from keras.callbacks import EarlyStopping, LearningRateScheduler
+from keras import backend as K
+from keras.callbacks import EarlyStopping, LearningRateScheduler, Callback
 import math
 
 
@@ -19,18 +20,18 @@ class Model(object):
     def build(self):
         self.model = Sequential()
 
-        model.add(Conv2D(32, kernel_size=(3, 3),
-                         activation='relu',
-                         input_shape=input_shape))
-        model.add(Conv2D(64, (3, 3), activation='relu'))
-        model.add(MaxPooling2D(pool_size=(2, 2)))
-        model.add(Dropout(self.params.dropout_first))
-        model.add(Flatten())
-        model.add(Dense(128, activation='relu'))
-        model.add(Dropout(self.params.dropout_second))
-        model.add(Dense(7, activation='softmax'))
+        self.model.add(Conv2D(32, kernel_size=(3, 3),
+                              activation='relu',
+                              input_shape=Model.input_shape))
+        self.model.add(Conv2D(64, (3, 3), activation='relu'))
+        self.model.add(MaxPooling2D(pool_size=(2, 2)))
+        self.model.add(Dropout(self.params.dropout_first))
+        self.model.add(Flatten())
+        self.model.add(Dense(128, activation='relu'))
+        self.model.add(Dropout(self.params.dropout_second))
+        self.model.add(Dense(7, activation='softmax'))
 
-        model.summary()
+        self.model.summary()
 
         # First layer takes 900 pixels of a 30 x 30 image
         # self.model.add(Dense(self.params.hidden_layer_neurons[0],
@@ -49,6 +50,11 @@ class Model(object):
         # self.model.add(Dense(7,
         #                      activation=self.params.output_activation,
         #                      kernel_initializer=self.params.weight_initialisation))
+
+        self.sgd = SGD(lr=self.params.lr,
+                       momentum=self.params.momentum,
+                       decay=self.params.lr_decay)
+
 
         self.model.compile(
             # Stochastic gradient descent
@@ -80,7 +86,8 @@ class Model(object):
                                                   self.validation_data.targets),
                                  callbacks=[
                                     EarlyStopping(monitor='val_loss', min_delta=0, patience=self.params.early_stopping_patience, verbose=0, mode='auto'),
-                                    LearningRateScheduler(decay, verbose=1)
+                                    LearningRateScheduler(decay, verbose=1),
+                                    MomentumRateScheduler(verbose=1)
                                  ],
                                  verbose=1)
 
@@ -124,3 +131,23 @@ def plot_history(history):
     plt.xlabel('epoch')
     plt.legend(['train', 'validation'], loc='upper left')
     plt.savefig('loss.png')
+
+class MomentumRateScheduler(Callback):
+    def __init__(self, verbose=0):
+        super(MomentumRateScheduler, self).__init__()
+        self.momentum = None
+        self.verbose = verbose
+
+    def on_epoch_begin(self, epoch, logs={}):
+        if self.momentum == None:
+            self.momentum = float(K.get_value(self.model.optimizer.momentum))
+        elif self.momentum < 0.9:
+            new_momentum = self.momentum + 0.05
+            self.model.optimizer.momentum = new_momentum
+            if self.verbose > 0:
+                print('\nEpoch %05d: MomentumRateScheduler increasing momentum '
+                           'rate to %s.' % (epoch + 1, new_momentum)) 
+        else:
+            if self.verbose > 0:
+                print('\nEpoch %05d: MomentumRateScheduler limit reached')
+            
