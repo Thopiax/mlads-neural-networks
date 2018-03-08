@@ -122,7 +122,7 @@ class MomentumRateScheduler(Callback):
         if self.momentum == None:
             self.momentum = float(K.get_value(self.model.optimizer.momentum))
         elif self.momentum < 0.9:
-            self.momentum += 0.015
+            self.momentum += 0.01
             self.model.optimizer.momentum = self.momentum
             if self.verbose > 0:
                 print('\nEpoch %05d: MomentumRateScheduler increasing momentum '
