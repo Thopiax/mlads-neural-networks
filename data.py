@@ -24,21 +24,6 @@ class InputData:
     def __len__(self):
         return len(self.data)
 
-    def normalize(self, mean_image):
-        self.data = np.subtract(self.data, mean_image)
-
-
-def calculate_mean_image(data):
-    culmulator = np.zeros(PIXELS_IN_IMAGE)
-
-    for image in data:
-        for i, pixel in enumerate(image):
-            culmulator[i] += pixel
-
-    mean_image = np.divide(culmulator, TRAINING_COUNT)
-
-    return mean_image
-
 
 def load_data(matlab_file):
     data = loadmat(matlab_file)
@@ -54,5 +39,9 @@ def load_data(matlab_file):
     assert len(training_data) == TRAINING_COUNT
     assert len(testing_data) == TESTING_COUNT
     assert len(validation_data) == VALIDATION_COUNT
+
+    training_data.data = training_data.data.reshape(training_data.data.shape[0], 30, 30, 1)
+    validation_data.data = validation_data.data.reshape(validation_data.data.shape[0], 30, 30, 1)
+    testing_data.data = test_data.data.reshape(testing_data.data.shape[0], 30, 30, 1)
 
     return training_data, testing_data, validation_data
