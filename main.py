@@ -148,6 +148,39 @@ def get_parser():
     return parser
 
 
+def confusion_matrix(testing_data, predictions):
+    # Compute confusion matrix
+    for i, prediction in enumerate(predictions):
+        expected_label = testing_data.targets[i].index(1)
+        predicted_label = prediction.index(1)
+
+        print(expected_label)
+        print(predicted_label)
+
+        confusion_matrix[expected_label, predicted_label] += 1
+
+    # Rows are actual labels, columns are predicted labels
+    predicted_sums = np.sum(confusion_matrix, axis=0)
+    actual_sums = np.sum(confusion_matrix, axis=1)
+
+    print("Confusion matrix:")
+    print(confusion_matrix)
+
+    for i in range(6):
+        true_positives = confusion_matrix[i, i]
+        false_positives = predicted_sums[i] - true_positives
+        false_negatives = actual_sums[i] - true_positives
+
+        recall = true_positives / (true_positives + false_negatives)
+        precision = true_positives / (true_positives + false_positives)
+        f1 = 2 * (precision * recall) / (precision + recall)
+
+        print("Statistics for emotion " + str(i) + ":")
+        print("Recall: " + str(recall))
+        print("Precision: " + str(precision))
+        print("F1: " + str(f1))
+        print()
+
 def main():
     parser = get_parser()
     params = parser.parse_args()
@@ -157,6 +190,11 @@ def main():
     history, model = train_and_report(training_data, validation_data, params)
     plot_accuracy(history)
     plot_loss(history)
+
+    predictions = model.model.predict(testing_data.data)
+
+    confusion_matrix(testing_data, predictions)
+
 
 
 if __name__ == "__main__":
