@@ -1,5 +1,5 @@
 from keras.models import Sequential
-from keras.layers import Dense
+from keras.layers import Dense, Activation, Dropout
 from keras.optimizers import SGD
 from keras.layers import LeakyReLU
 from keras.utils import plot_model
@@ -23,6 +23,8 @@ class Model(object):
                              input_dim=900,
                              activation='linear',
                              kernel_initializer=self.params.weight_initialisation))
+        self.model.add(Activation("relu"))
+        self.model.add(Dropout(0.346))
 
         # Hidden layers
         for neurons in self.params.hidden_layer_neurons[1:]:
@@ -30,6 +32,7 @@ class Model(object):
                                  activation=self.params.hidden_activation,
                                  kernel_initializer=self.params.weight_initialisation))
 
+            self.model.add(Dropout(0.4))
         # Final layer outputs one of the 7 emotions
         self.model.add(Dense(7, 
                              activation=self.params.output_activation,

@@ -1,10 +1,13 @@
+import numpy as np
+
+np.random.seed(42)
+
 from model import Model, plot_history
 import argparse
 from argparse import Namespace
 import os
 import csv
 import httplib2
-import numpy as np
 from datetime import datetime
 from apiclient import discovery
 from oauth2client import client
@@ -106,12 +109,12 @@ def get_parser():
     parser.add_argument('--lr', type=float, default=0.1)
     parser.add_argument('--lr_decay', type=float, default=0)
     parser.add_argument('--momentum', type=float, default=0.5)
-    parser.add_argument('--epochs', type=int, default=50)
+    parser.add_argument('--epochs', type=int, default=1000)
     parser.add_argument('--batch_size', type=int, default=128)
     parser.add_argument('--hidden_activation', type=str, default='relu')
     parser.add_argument('--output_activation', type=str, default='softmax')
     parser.add_argument('--weight_initialisation', type=str, default='random_uniform')
-    parser.add_argument('--hidden_layer_neurons', nargs='+', type=int, default=[300])
+    parser.add_argument('--hidden_layer_neurons', nargs='+', type=int, default=[812, 1136, 1460, 1729])
     parser.add_argument('--loss', type=str, default='categorical_crossentropy')
     parser.add_argument('--timestamp', type=str)
     parser.add_argument('--early_stopping_patience', type=int, default=10)
