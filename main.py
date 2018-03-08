@@ -52,7 +52,7 @@ def report_local(params, loss, accuracy):
 
     with open("./results/results-{}.csv".format(params.timestamp), "a+") as csvfile:
         writer = csv.writer(csvfile)
-        values = [str(datetime.now()), ' '.join(map(str, params.hidden_layer_neurons)), str(params.loss), str(params.hidden_activation), str(params.output_activation), str(params.weight_initialisation), str(params.epochs), str(params.batch_size), str(params.lr), str(params.lr_decay), str(params.momentum), str(loss), str(accuracy)]
+        values = [str(datetime.now()), str(params.loss), str(params.hidden_activation), str(params.output_activation), str(params.weight_initialisation), str(params.epochs), str(params.batch_size), str(params.lr), str(params.lr_scheduler), str(params.decay_rate), str(params.early_stopping_patience), str(params.dropout_first), str(params.dropout_second), str(params.momentum), str(loss), str(accuracy)]
 
         writer.writerow(values)
 
@@ -109,17 +109,19 @@ def get_parser():
 
     parser.add_argument('--data', type=str, default='data4students.mat')
     parser.add_argument('--lr', type=float, default=0.1)
-    parser.add_argument('--lr_decay', type=float, default=0)
+    parser.add_argument('--lr_scheduler', type=str, default='step_decay')
+    parser.add_argument('--decay_rate', type=float, default=3)
     parser.add_argument('--momentum', type=float, default=0.5)
     parser.add_argument('--epochs', type=int, default=1000)
     parser.add_argument('--batch_size', type=int, default=128)
     parser.add_argument('--hidden_activation', type=str, default='relu')
     parser.add_argument('--output_activation', type=str, default='softmax')
     parser.add_argument('--weight_initialisation', type=str, default='random_uniform')
-    parser.add_argument('--hidden_layer_neurons', nargs='+', type=int, default=[812, 1136, 1460, 1729])
     parser.add_argument('--loss', type=str, default='categorical_crossentropy')
-    parser.add_argument('--timestamp', type=str)
-    parser.add_argument('--early_stopping_patience', type=int, default=3)
+    parser.add_argument('--timestamp', type=str, default='test')
+    parser.add_argument('--early_stopping_patience', type=int, default=5)
+    parser.add_argument('--dropout_first', type=int, default=0)
+    parser.add_argument('--dropout_second', type=int, default=0)
 
     return parser
 
