@@ -30,10 +30,14 @@ def submit_condor_job(i, t, name, value):
 
 def main():
     t = time()
-    rand = np.around(0.10 * np.random.random_sample(50) + 0.25, decimals=3)
-    print(rand)
-    for i, value in enumerate(rand):
-        submit_condor_job(i, t, 'lr', value)
+
+    step_rand = np.random.random_integers(1, 10, 40)
+    exp_rand  = np.around(np.random.random_sample(40), decimals=5)
+    inverse_rand = np.around(np.random.random_sample(40), decimals=5)
+
+    for (name, rand) in [('step_decay', step_rand), ('exponential_decay', exp_rand), ('inverse_decay', inverse_rand)]:
+       for i, value in enumerate(rand):
+           submit_condor_job(i, t, name, value)
 
 
 if __name__ == "__main__":
