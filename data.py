@@ -42,6 +42,6 @@ def load_data(matlab_file):
 
     training_data.data = training_data.data.reshape(training_data.data.shape[0], 30, 30, 1)
     validation_data.data = validation_data.data.reshape(validation_data.data.shape[0], 30, 30, 1)
-    testing_data.data = test_data.data.reshape(testing_data.data.shape[0], 30, 30, 1)
+    testing_data.data = testing_data.data.reshape(testing_data.data.shape[0], 30, 30, 1)
 
     return training_data, testing_data, validation_data
