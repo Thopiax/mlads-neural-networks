@@ -139,7 +139,7 @@ def get_parser():
     parser.add_argument('--weight_initialisation', type=str, default='random_uniform')
     parser.add_argument('--loss', type=str, default='categorical_crossentropy')
     parser.add_argument('--timestamp', type=str, default='test')
-    parser.add_argument('--early_stopping_patience', type=int, default=5)
+    parser.add_argument('--early_stopping_patience', type=int, default=3)
     parser.add_argument('--dropout_first', type=float, default=0)
     parser.add_argument('--dropout_second', type=float, default=0)
     parser.add_argument('--l1', type=float, default=0.0)
