@@ -2,7 +2,7 @@ import numpy as np
 
 np.random.seed(42)
 
-from model import Model, plot_history
+from model import Model, plot_accuracy, plot_loss
 import argparse
 from argparse import Namespace
 import os
@@ -52,7 +52,26 @@ def report_local(params, loss, accuracy):
 
     with open("./results/results-{}.csv".format(params.timestamp), "a+") as csvfile:
         writer = csv.writer(csvfile)
-        values = [str(datetime.now()), str(params.loss), str(params.hidden_activation), str(params.output_activation), str(params.weight_initialisation), str(params.epochs), str(params.batch_size), str(params.lr), str(params.lr_scheduler), str(params.decay_rate), str(params.early_stopping_patience), str(params.dropout_first), str(params.dropout_second), str(params.momentum), str(loss), str(accuracy)]
+        values = [
+            str(datetime.now()),
+            str(params.loss),
+            str(params.hidden_activation),
+            str(params.output_activation),
+            str(params.weight_initialisation),
+            str(params.epochs),
+            str(params.batch_size),
+            str(params.lr),
+            str(params.lr_scheduler),
+            str(params.decay_rate),
+            str(params.early_stopping_patience),
+            str(params.dropout_first),
+            str(params.dropout_second),
+            str(params.momentum),
+            str(params.l1),
+            str(params.l2),
+            str(loss),
+            str(accuracy)
+        ]
 
         writer.writerow(values)
         print(", ".join(values))
@@ -123,6 +142,8 @@ def get_parser():
     parser.add_argument('--early_stopping_patience', type=int, default=5)
     parser.add_argument('--dropout_first', type=float, default=0)
     parser.add_argument('--dropout_second', type=float, default=0)
+    parser.add_argument('--l1', type=float, default=0.01)
+    parser.add_argument('--l2', type=float, default=0.00)
 
     return parser
 
@@ -134,7 +155,8 @@ def main():
     training_data, testing_data, validation_data = load_data(params.data)
 
     history, model = train_and_report(training_data, validation_data, params)
-    plot_history(history)
+    plot_accuracy(history)
+    plot_loss(history)
 
 
 if __name__ == "__main__":
