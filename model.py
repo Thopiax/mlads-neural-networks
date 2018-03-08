@@ -3,6 +3,8 @@ from keras.layers import Dense
 from keras.optimizers import SGD
 from keras.layers import LeakyReLU
 from keras.utils import plot_model
+from keras.callbacks import EarlyStopping, LearningRateScheduler
+import math
 
 
 class Model(object):
@@ -39,18 +41,28 @@ class Model(object):
             # Objective function which we wish to minimise
             loss=self.params.loss,
 
+            
+
             # Metrics used to judge the effectiveness of our model
             # Accuracy is used for classification problems
             metrics=['categorical_accuracy']
         )
 
     def train(self, epochs=20, batch_size=32):
+        
+        step_decay = self.build_step_decay()
+
+
         history = self.model.fit(self.training_data.data,
                                  self.training_data.targets,
                                  epochs=epochs,
                                  batch_size=batch_size,
                                  validation_data=(self.validation_data.data,
                                                   self.validation_data.targets),
+                                 callbacks=[
+                                    EarlyStopping(monitor='val_loss', min_delta=0, patience=self.params.early_stopping_patience, verbose=0, mode='auto'),
+                                    LearningRateScheduler(step_decay, verbose=1)
+                                 ],
                                  verbose=1)
 
         return history
@@ -62,6 +74,9 @@ class Model(object):
         print("Loss: {}\n Accuracy: {}".format(loss, accuracy))
 
         return loss, accuracy
+    
+    def build_step_decay(self):
+        return lambda epoch, lr: self.params.lr * math.pow((1/2), math.floor((1+epoch)/5))
 
 
 def plot_history(history):
@@ -84,3 +99,4 @@ def plot_history(history):
     plt.xlabel('epoch')
     plt.legend(['train', 'validation'], loc='upper left')
     plt.savefig('loss.png')
+
