@@ -49,7 +49,7 @@ def main():
     model.summary()
 
     model.compile(loss='categorical_crossentropy',
-                  optimizer=RMSprop(),
+                  optimizer=SGD(momentum=0.5),
                   metrics=['accuracy'])
 
     history = model.fit(training_data.data, training_data.targets,

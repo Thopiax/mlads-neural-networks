@@ -45,10 +45,12 @@ def get_credentials(flags):
 
 
 def report_local(params, loss, accuracy):
-    if loss == "nan": return
+    if loss == "nan":
+        return
 
     print("reporting:\n\tparams={}\n\tloss:{}\n\taccuracy".format(params, loss, accuracy))
-    with open("./results/results-{}.csv".format(params.timestamp), "a") as csvfile:
+
+    with open("./results/results-{}.csv".format(params.timestamp), "a+") as csvfile:
         writer = csv.writer(csvfile)
         values = [str(datetime.now()), ' '.join(map(str, params.hidden_layer_neurons)), str(params.loss), str(params.hidden_activation), str(params.output_activation), str(params.weight_initialisation), str(params.epochs), str(params.batch_size), str(params.lr), str(params.lr_decay), str(params.momentum), str(loss), str(accuracy)]
 
@@ -117,7 +119,7 @@ def get_parser():
     parser.add_argument('--hidden_layer_neurons', nargs='+', type=int, default=[812, 1136, 1460, 1729])
     parser.add_argument('--loss', type=str, default='categorical_crossentropy')
     parser.add_argument('--timestamp', type=str)
-    parser.add_argument('--early_stopping_patience', type=int, default=10)
+    parser.add_argument('--early_stopping_patience', type=int, default=3)
 
     return parser
 
@@ -129,7 +131,7 @@ def main():
     training_data, testing_data, validation_data = load_data(params.data)
 
     history, model = train_and_report(training_data, validation_data, params)
-    # plot_history(history)
+    plot_history(history)
 
 
 if __name__ == "__main__":
