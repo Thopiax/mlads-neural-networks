@@ -103,10 +103,10 @@ class Model(object):
 
 
 def plot_accuracy(history):
-
+    
     # Plot accuracy
-    plt.plot(np.subtract(1, history.history['categorical_accuracy']))
-    plt.plot(np.subtract(1, history.history['val_categorical_accuracy']))
+    plt.plot(history.history['categorical_accuracy'])
+    plt.plot(history.history['val_categorical_accuracy'])
     plt.title('Error')
     plt.ylabel('accuracy')
     plt.xlabel('epoch')
@@ -117,6 +117,7 @@ def plot_accuracy(history):
 def plot_loss(history):
 
     # Plot loss
+    print(np.shape(history.history['loss']))
     plt.plot(history.history['loss'])
     plt.plot(history.history['val_loss'])
     plt.title('Loss')
