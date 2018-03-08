@@ -1,6 +1,6 @@
 from keras.models import Sequential
 from keras.layers import Dense, Activation, Dropout
-from keras.optimizers import SGD
+from keras.optimizers import RMSprop, SGD
 from keras.layers import LeakyReLU
 from keras.utils import plot_model
 from keras.callbacks import EarlyStopping, LearningRateScheduler
@@ -9,6 +9,7 @@ import math
 
 class Model(object):
     """Keras Model wrapper."""
+    input_shape = (30, 30, 1)
 
     def __init__(self, training_data, validation_data, params = {}):
         self.training_data = training_data
@@ -18,25 +19,36 @@ class Model(object):
     def build(self):
         self.model = Sequential()
 
+        model.add(Conv2D(32, kernel_size=(3, 3),
+                         activation='relu',
+                         input_shape=input_shape))
+        model.add(Conv2D(64, (3, 3), activation='relu'))
+        model.add(MaxPooling2D(pool_size=(2, 2)))
+        model.add(Dropout(self.params.dropout_first))
+        model.add(Flatten())
+        model.add(Dense(128, activation='relu'))
+        model.add(Dropout(self.params.dropout_second))
+        model.add(Dense(7, activation='softmax'))
+
+        model.summary()
+
         # First layer takes 900 pixels of a 30 x 30 image
-        self.model.add(Dense(self.params.hidden_layer_neurons[0],
-                             input_dim=900,
-                             activation='linear',
-                             kernel_initializer=self.params.weight_initialisation))
-        self.model.add(Activation("relu"))
-        self.model.add(Dropout(0.346))
-
-        # Hidden layers
-        for neurons in self.params.hidden_layer_neurons[1:]:
-            self.model.add(Dense(neurons, 
-                                 activation=self.params.hidden_activation,
-                                 kernel_initializer=self.params.weight_initialisation))
-
-            self.model.add(Dropout(0.4))
-        # Final layer outputs one of the 7 emotions
-        self.model.add(Dense(7, 
-                             activation=self.params.output_activation,
-                             kernel_initializer=self.params.weight_initialisation))
+        # self.model.add(Dense(self.params.hidden_layer_neurons[0],
+        #                      input_dim=900,
+        #                      activation='linear',
+        #                      kernel_initializer=self.params.weight_initialisation))
+        # self.model.add(Activation("relu"))
+        #
+        # # Hidden layers
+        # for neurons in self.params.hidden_layer_neurons[1:]:
+        #     self.model.add(Dense(neurons,
+        #                          activation=self.params.hidden_activation,
+        #                          kernel_initializer=self.params.weight_initialisation))
+        #
+        # # Final layer outputs one of the 7 emotions
+        # self.model.add(Dense(7,
+        #                      activation=self.params.output_activation,
+        #                      kernel_initializer=self.params.weight_initialisation))
 
         self.model.compile(
             # Stochastic gradient descent
@@ -45,10 +57,9 @@ class Model(object):
                           momentum=self.params.momentum,
                           decay=self.params.lr_decay),
 
+
             # Objective function which we wish to minimise
             loss=self.params.loss,
-
-            
 
             # Metrics used to judge the effectiveness of our model
             # Accuracy is used for classification problems
@@ -59,9 +70,7 @@ class Model(object):
         plot_model(self.model.model, to_file="model.png")
 
     def train(self, epochs=20, batch_size=32):
-        
-        step_decay = self.build_step_decay()
-
+        decay = self.build_step_decay()
 
         history = self.model.fit(self.training_data.data,
                                  self.training_data.targets,
@@ -71,7 +80,7 @@ class Model(object):
                                                   self.validation_data.targets),
                                  callbacks=[
                                     EarlyStopping(monitor='val_loss', min_delta=0, patience=self.params.early_stopping_patience, verbose=0, mode='auto'),
-                                    LearningRateScheduler(step_decay, verbose=1)
+                                    LearningRateScheduler(decay, verbose=1)
                                  ],
                                  verbose=1)
 
@@ -84,17 +93,23 @@ class Model(object):
         print("Loss: {}\n Accuracy: {}".format(loss, accuracy))
 
         return loss, accuracy
-    
+
     def build_step_decay(self):
         return lambda epoch, lr: self.params.lr * math.pow((1/2), math.floor((1+epoch)/5))
+
+    def build_exponential_decay(self):
+        return lambda epoch, lr: self.params.lr * math.exp(-0.1*epoch)
+
+    def build_inverse_decay(self):
+        return lambda epoch, lr: self.params.lr/(1 + 0.1*epoch)
 
 
 def plot_history(history):
     import matplotlib.pyplot as plt
 
     # Plot accuracy
-    plt.plot(history.history['acc'])
-    plt.plot(history.history['val_acc'])
+    plt.plot(history.history['categorical_accuracy'])
+    plt.plot(history.history['val_categorical_accuracy'])
     plt.title('model accuracy')
     plt.ylabel('accuracy')
     plt.xlabel('epoch')
@@ -109,4 +124,3 @@ def plot_history(history):
     plt.xlabel('epoch')
     plt.legend(['train', 'validation'], loc='upper left')
     plt.savefig('loss.png')
-

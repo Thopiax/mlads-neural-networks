@@ -114,10 +114,11 @@ def get_parser():
     parser.add_argument('--hidden_activation', type=str, default='relu')
     parser.add_argument('--output_activation', type=str, default='softmax')
     parser.add_argument('--weight_initialisation', type=str, default='random_uniform')
-    parser.add_argument('--hidden_layer_neurons', nargs='+', type=int, default=[812, 1136, 1460, 1729])
     parser.add_argument('--loss', type=str, default='categorical_crossentropy')
-    parser.add_argument('--timestamp', type=str)
+    parser.add_argument('--timestamp', type=str, default='test')
     parser.add_argument('--early_stopping_patience', type=int, default=10)
+    parser.add_argument('--dropout_first', type=int, default=0)
+    parser.add_argument('--dropout_second', type=int, default=0)
 
     return parser
 
@@ -129,7 +130,7 @@ def main():
     training_data, testing_data, validation_data = load_data(params.data)
 
     history, model = train_and_report(training_data, validation_data, params)
-    # plot_history(history)
+    plot_history(history)
 
 
 if __name__ == "__main__":
