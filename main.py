@@ -2,7 +2,7 @@ import numpy as np
 
 np.random.seed(42)
 
-from model import Model, plot_history
+from model import Model, plot_accuracy, plot_loss
 import argparse
 from argparse import Namespace
 import os
@@ -154,7 +154,8 @@ def main():
     training_data, testing_data, validation_data = load_data(params.data)
 
     history, model = train_and_report(training_data, validation_data, params)
-    plot_history(history)
+    plot_accuracy(history)
+    plot_loss(history)
 
 
 if __name__ == "__main__":
