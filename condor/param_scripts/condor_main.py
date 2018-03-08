@@ -7,13 +7,11 @@ import numpy as np
 def main():
     name    = sys.argv[1]
     t       = sys.argv[2]
-    low     = float(sys.argv[3])
-    high    = float(sys.argv[4])
-    samples = int(sys.argv[5])
-    is_int  = bool(sys.argv[6])
+    value   = float(sys.argv[3])
+    #high    = float(sys.argv[4])
+    #samples = int(sys.argv[5])
+    is_int  = bool(sys.argv[4])
     training_data, testing_data, validation_data = load_data("data4students.mat")
-
-    np.random.seed(42)
 
     if is_int:
        rand = np.random.random_integers(low, high, samples)
