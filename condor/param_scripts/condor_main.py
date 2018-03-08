@@ -23,8 +23,8 @@ def main():
 
 
     parser = get_parser()
-    params = parser.parse_args(["--timestamp", str(t), "--lr_scheduler", name, "--decay_rate", str(value)])
-    #params = parser.parse_args(["--timestamp", str(t), "--{}".format(name), str(value)])
+    # params = parser.parse_args(["--timestamp", str(t), "--lr_scheduler", name, "--decay_rate", str(value)])
+    params = parser.parse_args(["--timestamp", str(t), "--{}".format(name), str(value)])
     train_and_report(training_data, validation_data, params)
 
 

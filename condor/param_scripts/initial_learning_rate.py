@@ -30,10 +30,10 @@ def submit_condor_job(i, t, name, value):
 
 def main():
     t = time()
-    rand = np.around(0.10 * np.random.random_sample(50) + 0.25, decimals=3)
+    rand = np.around(0.3 * np.random.random_sample(50), decimals=3)
     print(rand)
     for i, value in enumerate(rand):
-        submit_condor_job(i, t, 'lr', value)
+        submit_condor_job(i, t, 'lr_decay', value)
 
 
 if __name__ == "__main__":

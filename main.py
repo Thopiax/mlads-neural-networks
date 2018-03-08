@@ -108,9 +108,9 @@ def get_parser():
         parents=[tools.argparser])
 
     parser.add_argument('--data', type=str, default='data4students.mat')
-    parser.add_argument('--lr', type=float, default=0.1)
-    parser.add_argument('--lr_scheduler', type=str, default='step_decay')
-    parser.add_argument('--decay_rate', type=float, default=3)
+    parser.add_argument('--lr', type=float, default=0.207)
+    parser.add_argument('--lr_scheduler', type=str, default='inverse_decay')
+    parser.add_argument('--decay_rate', type=float, default=0.13)
     parser.add_argument('--momentum', type=float, default=0.5)
     parser.add_argument('--epochs', type=int, default=1000)
     parser.add_argument('--batch_size', type=int, default=128)
