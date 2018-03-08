@@ -31,9 +31,9 @@ def submit_condor_job(i, t, name, value):
 def main():
     t = time()
 
-    step_rand = np.random.random_integers(1, 10, 40)
-    exp_rand  = np.around(np.random.random_sample(40), decimals=5)
-    inverse_rand = np.around(np.random.random_sample(40), decimals=5)
+    step_rand = np.random.random_integers(1, 10, 10)
+    exp_rand  = np.around(np.random.random_sample(10), decimals=5)
+    inverse_rand = np.around(np.random.random_sample(10), decimals=5)
 
     for (name, rand) in [('step_decay', step_rand), ('exponential_decay', exp_rand), ('inverse_decay', inverse_rand)]:
        for i, value in enumerate(rand):

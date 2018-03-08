@@ -109,7 +109,7 @@ def plot_history(history):
     plt.title('model loss')
     plt.ylabel('loss')
     plt.xlabel('epoch')
-    plt.legend(['train', 'validation'], loc='upper left')
+    plt.legend(['train', 'validation', 'test'], loc='upper left')
     plt.savefig('loss.png')
 
 class MomentumRateScheduler(Callback):
