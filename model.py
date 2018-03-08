@@ -66,7 +66,7 @@ class Model(object):
                                                   patience=self.params.early_stopping_patience,
                                                   verbose=0,
                                                   mode='auto'),
-                                    LearningRateScheduler(step_decay, verbose=1),
+                                    LearningRateScheduler(decay, verbose=1),
                                     MomentumRateScheduler(verbose=1)
                                  ],
                                  verbose=1)
