@@ -1,6 +1,6 @@
 import numpy as np
 
-np.random.seed(42)
+np.random.seed(1337)
 
 from model import Model, plot_accuracy, plot_loss
 import argparse
@@ -128,9 +128,9 @@ def get_parser():
         parents=[tools.argparser])
 
     parser.add_argument('--data', type=str, default='data4students.mat')
-    parser.add_argument('--lr', type=float, default=0.1)
+    parser.add_argument('--lr', type=float, default=0.207)
     parser.add_argument('--lr_scheduler', type=str, default='inverse_decay')
-    parser.add_argument('--decay_rate', type=float, default=0.13676)
+    parser.add_argument('--decay_rate', type=float, default=0.13)
     parser.add_argument('--momentum', type=float, default=0.5)
     parser.add_argument('--epochs', type=int, default=1000)
     parser.add_argument('--batch_size', type=int, default=128)
@@ -142,8 +142,8 @@ def get_parser():
     parser.add_argument('--early_stopping_patience', type=int, default=5)
     parser.add_argument('--dropout_first', type=float, default=0)
     parser.add_argument('--dropout_second', type=float, default=0)
-    parser.add_argument('--l1', type=float, default=0.01)
-    parser.add_argument('--l2', type=float, default=0.00)
+    parser.add_argument('--l1', type=float, default=0.0)
+    parser.add_argument('--l2', type=float, default=0.0)
 
     return parser
 

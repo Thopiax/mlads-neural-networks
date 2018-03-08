@@ -24,24 +24,58 @@ class InputData:
     def __len__(self):
         return len(self.data)
 
+    def normalize(self, mean_image):
+        self.data = np.divide(np.subtract(self.data, mean_image), 255)
+
+
+def calculate_mean_image(data):
+    culmulator = np.zeros(PIXELS_IN_IMAGE)
+
+    for image in data:
+        for i, pixel in enumerate(image):
+            culmulator[i] += pixel
+
+    mean_image = np.divide(culmulator, TRAINING_COUNT)
+
+    return mean_image
 
 def load_data(matlab_file):
-    data = loadmat(matlab_file)
-    inputs = data["datasetInputs"][0]
-    targets = data["datasetTargets"][0]
+    if os.path.isfile("{}.pkl".format(matlab_file)):
+        print("uSing cached file")
+        with open("{}.pkl".format(matlab_file), "rb") as pkl_file:
+            return pickle.load(pkl_file)
+    else:
+        data = loadmat(matlab_file)
+        inputs = data["datasetInputs"][0]
+        targets = data["datasetTargets"][0]
 
-    # Assign data
-    training_data = InputData(norm(inputs[0]), targets[0])
-    testing_data = InputData(norm(inputs[1]), targets[1])
-    validation_data = InputData(norm(inputs[2]), targets[2])
+        # Assign data
+        training_data   = InputData(inputs[0], targets[0])
+        testing_data    = InputData(inputs[1], targets[1])
+        validation_data = InputData(inputs[2], targets[2])
 
-    # Check data size
-    assert len(training_data) == TRAINING_COUNT
-    assert len(testing_data) == TESTING_COUNT
-    assert len(validation_data) == VALIDATION_COUNT
+        # Check data size
+        assert len(training_data) == TRAINING_COUNT
+        assert len(testing_data) == TESTING_COUNT
+        assert len(validation_data) == VALIDATION_COUNT
 
-    training_data.data = training_data.data.reshape(training_data.data.shape[0], 30, 30, 1)
-    validation_data.data = validation_data.data.reshape(validation_data.data.shape[0], 30, 30, 1)
-    testing_data.data = testing_data.data.reshape(testing_data.data.shape[0], 30, 30, 1)
+        # Get mean image to normalize data
+        mean_image = calculate_mean_image(training_data.data)
 
-    return training_data, testing_data, validation_data
+        # Normalize data
+        training_data.normalize(mean_image)
+        testing_data.normalize(mean_image)
+        validation_data.normalize(mean_image)
+
+        training_data.data = training_data.data.reshape(training_data.data.shape[0], 30, 30, 1)
+        validation_data.data = validation_data.data.reshape(validation_data.data.shape[0], 30, 30, 1)
+        testing_data.data = testing_data.data.reshape(testing_data.data.shape[0], 30, 30, 1)
+
+        print(training_data.data[:100])
+
+        # Saved normalized data
+        with open("{}.pkl".format(matlab_file), "wb") as pkl_file:
+            pickle.dump((training_data, testing_data, validation_data), pkl_file)
+
+
+        return training_data, testing_data, validation_data
