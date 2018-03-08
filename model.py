@@ -5,6 +5,7 @@ from keras.layers import LeakyReLU
 from keras.utils import plot_model
 from keras import backend as K
 from keras.callbacks import EarlyStopping, LearningRateScheduler, Callback
+import matplotlib.pyplot as plt
 import math
 
 
@@ -91,22 +92,22 @@ class Model(object):
         return lambda epoch, lr: self.params.lr/(1 + self.params.decay_rate*epoch)
 
 
-def plot_history(history):
-    import matplotlib.pyplot as plt
+def plot_accuracy(history):
 
     # Plot accuracy
     plt.plot(history.history['categorical_accuracy'])
     plt.plot(history.history['val_categorical_accuracy'])
-    plt.title('model accuracy')
+    plt.title('Classification Rate')
     plt.ylabel('accuracy')
     plt.xlabel('epoch')
     plt.legend(['train', 'validation'], loc='upper left')
     plt.savefig('accuracy.png')
 
+def plot_loss(history):
     # Plot loss
     plt.plot(history.history['loss'])
     plt.plot(history.history['val_loss'])
-    plt.title('model loss')
+    plt.title('Loss')
     plt.ylabel('loss')
     plt.xlabel('epoch')
     plt.legend(['train', 'validation', 'test'], loc='upper left')
