@@ -41,7 +41,7 @@ class Model(object):
 
             # Metrics used to judge the effectiveness of our model
             # Accuracy is used for classification problems
-            metrics=['accuracy']
+            metrics=['categorical_accuracy']
         )
 
     def train(self, epochs=20, batch_size=32):

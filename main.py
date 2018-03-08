@@ -1,4 +1,4 @@
-from model import Model
+from model import Model, plot_history
 import argparse
 from argparse import Namespace
 import os
@@ -10,6 +10,7 @@ from apiclient import discovery
 from oauth2client import client
 from oauth2client import tools
 from oauth2client.file import Storage
+from data import load_data
 
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2'
 
@@ -39,13 +40,15 @@ def get_credentials(flags):
 
     return credentials
 
+
 def report_local(params, loss, accuracy):
     print("reporting:\n\tparams={}\n\tloss:{}\n\taccuracy".format(params, loss, accuracy))
     with open("results.csv", "a") as csvfile:
         writer = csv.writer(csvfile)
-        values = [str(datetime.now()), '| '.join(map(str, params.hidden_layer_neurons)), str(params.loss), str(params.hidden_activation), str(params.output_activation), str(params.weight_initialisation), str(params.epochs), str(params.batch_size), str(params.lr), str(params.lr_decay), str(params.momentum), str(loss), str(accuracy)] 
+        values = [str(datetime.now()), '| '.join(map(str, params.hidden_layer_neurons)), str(params.loss), str(params.hidden_activation), str(params.output_activation), str(params.weight_initialisation), str(params.epochs), str(params.batch_size), str(params.lr), str(params.lr_decay), str(params.momentum), str(loss), str(accuracy)]
 
         writer.writerow(values)
+
 
 def report_run(params, loss, accuracy):
     credentials = get_credentials(params)
@@ -84,10 +87,12 @@ def report_run(params, loss, accuracy):
 def train_and_report(training_data, validation_data, params):
     model = Model(training_data, validation_data, params)
     model.build()
-    model.train(epochs=params.epochs, batch_size=params.batch_size)
+    history = model.train(epochs=params.epochs, batch_size=params.batch_size)
 
     loss, accuracy = model.evaluate()
     report_local(params, loss, accuracy)
+
+    return history, model
 
 
 def get_parser():
@@ -102,7 +107,7 @@ def get_parser():
     parser.add_argument('--epochs', type=int, default=100)
     parser.add_argument('--batch_size', type=int, default=128)
     parser.add_argument('--hidden_activation', type=str, default='relu')
-    parser.add_argument('--output_activation', type=str, default='relu')
+    parser.add_argument('--output_activation', type=str, default='softmax')
     parser.add_argument('--weight_initialisation', type=str, default='glorot_uniform')
     parser.add_argument('--hidden_layer_neurons', nargs='+', type=int, default=[300, 30])
     parser.add_argument('--loss', type=str, default='categorical_crossentropy')
@@ -116,7 +121,8 @@ def main():
 
     training_data, testing_data, validation_data = load_data(params.data)
 
-    train_and_report(training_data, validation_data, params)
+    history, model = train_and_report(training_data, validation_data, params)
+    # plot_history(history)
 
 
 if __name__ == "__main__":
