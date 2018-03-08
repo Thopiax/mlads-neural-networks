@@ -52,7 +52,26 @@ def report_local(params, loss, accuracy):
 
     with open("./results/results-{}.csv".format(params.timestamp), "a+") as csvfile:
         writer = csv.writer(csvfile)
-        values = [str(datetime.now()), str(params.loss), str(params.hidden_activation), str(params.output_activation), str(params.weight_initialisation), str(params.epochs), str(params.batch_size), str(params.lr), str(params.lr_scheduler), str(params.decay_rate), str(params.early_stopping_patience), str(params.dropout_first), str(params.dropout_second), str(params.momentum), str(loss), str(accuracy)]
+        values = [
+            str(datetime.now()),
+            str(params.loss),
+            str(params.hidden_activation),
+            str(params.output_activation),
+            str(params.weight_initialisation),
+            str(params.epochs),
+            str(params.batch_size),
+            str(params.lr),
+            str(params.lr_scheduler),
+            str(params.decay_rate),
+            str(params.early_stopping_patience),
+            str(params.dropout_first),
+            str(params.dropout_second),
+            str(params.momentum),
+            str(params.l1),
+            str(params.l2),
+            str(loss),
+            str(accuracy)
+        ]
 
         writer.writerow(values)
 
