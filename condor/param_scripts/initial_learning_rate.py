@@ -1,5 +1,6 @@
 import subprocess
 import os
+from datetime import time
 
 
 def submit_condor_job(i, name, low, high, samples):
@@ -20,8 +21,8 @@ def submit_condor_job(i, name, low, high, samples):
          'output = condor/results/{name}.{i}.out \n'
          'error = condor/results/{name}.{i}.err \n'
          'log = condor/results/{name}.{i}.log \n'
-         'arguments = {name} {low} {high} {samples}\n'
-         'queue 1'.format(i=i, name=name, low=low, high=high, samples=samples))
+         'arguments = {name} {t} {low} {high} {samples} true\n'
+         'queue 1'.format(i=i, t=t, name=name, low=low, high=high, samples=samples))
 
     subprocess.call('condor_submit {filename}'.format(filename=filename), shell=True)
 
@@ -29,8 +30,9 @@ def submit_condor_job(i, name, low, high, samples):
 
 
 def main():
+    t = time()
     for i in range(0, 50):
-        submit_condor_job(i, 'lr',
+        submit_condor_job(i, t, 'lr',
                           low=i * 0.005,
                           high=i * 0.005 + 0.005,
                           samples=5)

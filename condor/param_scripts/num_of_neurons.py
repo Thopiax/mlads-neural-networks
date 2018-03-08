@@ -1,51 +1,40 @@
-from data import load_data
-from model import Model
-from keras.models import Sequential
-from keras.layers import Dense
-from keras.optimizers import SGD
-from keras.layers import LeakyReLU
-from random import randint
+import subprocess
+import os
+from datetime import time
+
+def submit_condor_job(i, t, name, low, high, samples):
+    print("Submitting jobs for {name}={low} to {name}={high}, samples={samples}"
+          .format(name=name, low=low, high=high, samples=samples))
+
+    filename = '{name}_{low}_{high}'.format(low=low,
+                                            high=high,
+                                            name=name)
+    filename = 'temp.cmd'
+
+    with open(filename, 'w') as f:
+        f.write(
+         'universe = vanilla \n'
+         'InitialDir =  \n'
+         'executable = condor/condorSetupRun.sh  \n'
+         'input = /dev/null \n'
+         'output = condor/results/{name}.{i}.out \n'
+         'error = condor/results/{name}.{i}.err \n'
+         'log = condor/results/{name}.{i}.log \n'
+         'arguments = {name} {t} {low} {high} {samples} false\n'
+         'queue 1'.format(i=i, t=t, name=name, low=low, high=high, samples=samples))
+
+    subprocess.call('condor_submit {filename}'.format(filename=filename), shell=True)
+
+    os.remove(filename)
 
 
 def main():
-    training_data, test_data, validation_data = load_data("data4students.mat")
-
-    for i in range(100):
-        model = Model(training_data, test_data)
-        model.model = Sequential()
-
-        hidden_layers = randint(3, 8)
-        layer_neurons = [randint(0, 2000) for x in range(hidden_layers + 1)]
-
-        print("Number of hidden layers: {}".format(hidden_layers))
-        print("Neuron layout: {}".format(layer_neurons))
-
-        model.model.add(Dense(900, input_dim=900, activation='linear'))
-
-        for i in range(0, hidden_layers):
-            model.model.add(Dense(layer_neurons[i + 1]))
-            model.model.add(LeakyReLU(alpha=0.5))
-
-        model.model.add(Dense(7, activation='softmax'))
-
-        model.model.compile(
-            # Stochastic gradient descent
-            # Learning rate, momentum, learning rate decay
-            optimizer=SGD(lr=0.01,
-                          momentum=0.5,
-                          decay=0.0),
-
-            # Objective function which we wish to minimise
-            loss='categorical_crossentropy',
-
-            # Metrics used to judge the effectiveness of our model
-            # Accuracy is used for classification problems
-            metrics=['accuracy']
-        )
-
-        model.train(epochs=20, batch_size=128)
-        loss, accuracy = model.evaluate()
-
+    t = time()
+    for i in range(0, 100):
+        submit_condor_job(i, t,  'hidden_layer_neurons',
+                          low=1,
+                          high=4,
+                          samples=8)
 
 if __name__ == "__main__":
     main()
