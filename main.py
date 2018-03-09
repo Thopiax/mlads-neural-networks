@@ -130,8 +130,8 @@ def get_parser():
 
     parser.add_argument('--data', type=str, default='data4students.mat')
     parser.add_argument('--lr', type=float, default=0.207)
-    parser.add_argument('--lr_scheduler', type=str, default='inverse_decay')
-    parser.add_argument('--decay_rate', type=float, default=0.13)
+    parser.add_argument('--lr_scheduler', type=str, default='exponential_decay')
+    parser.add_argument('--decay_rate', type=float, default=0.37293)
     parser.add_argument('--momentum', type=float, default=0.5)
     parser.add_argument('--epochs', type=int, default=1000)
     parser.add_argument('--batch_size', type=int, default=128)
@@ -140,9 +140,9 @@ def get_parser():
     parser.add_argument('--weight_initialisation', type=str, default='random_uniform')
     parser.add_argument('--loss', type=str, default='categorical_crossentropy')
     parser.add_argument('--timestamp', type=str, default='test')
-    parser.add_argument('--early_stopping_patience', type=int, default=5)
-    parser.add_argument('--dropout_first', type=float, default=0)
-    parser.add_argument('--dropout_second', type=float, default=0)
+    parser.add_argument('--early_stopping_patience', type=int, default=3)
+    parser.add_argument('--dropout_first', type=float, default=0.08077)
+    parser.add_argument('--dropout_second', type=float, default=0.24986)
     parser.add_argument('--l1', type=float, default=0.0)
     parser.add_argument('--l2', type=float, default=0.0)
 

@@ -103,24 +103,27 @@ class Model(object):
 
 
 def plot_accuracy(history):
-
+    
     # Plot accuracy
     plt.plot(history.history['categorical_accuracy'])
     plt.plot(history.history['val_categorical_accuracy'])
-    plt.title('Classification Rate')
+    plt.title('Error')
     plt.ylabel('accuracy')
     plt.xlabel('epoch')
-    plt.legend(['train', 'validation'], loc='upper left')
+    plt.legend(['training', 'validation'], loc='upper left')
     plt.savefig('accuracy.png')
+    plt.clf()
 
 def plot_loss(history):
+
     # Plot loss
+    print(np.shape(history.history['loss']))
     plt.plot(history.history['loss'])
     plt.plot(history.history['val_loss'])
     plt.title('Loss')
     plt.ylabel('loss')
     plt.xlabel('epoch')
-    plt.legend(['train', 'validation', 'test'], loc='upper left')
+    plt.legend(['training', 'validation'], loc='upper left')
     plt.savefig('loss.png')
 
 class MomentumRateScheduler(Callback):
